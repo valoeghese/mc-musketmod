@@ -277,7 +277,8 @@ public class BulletEntity extends AbstractHurtingProjectile {
             getX(), getY(), getZ(),
             getXRot(), getYRot(),
             getType(), owner != null ? owner.getId() : 0,
-            getDeltaMovement().scale(ClientboundAddEntityPacket.LIMIT / entityData.get(INITIAL_SPEED))
+            getDeltaMovement().scale(LIMIT / entityData.get(INITIAL_SPEED)),
+            getYHeadRot()
         );
     }
 
@@ -285,7 +286,7 @@ public class BulletEntity extends AbstractHurtingProjectile {
     public void recreateFromPacket(ClientboundAddEntityPacket packet) {
         super.recreateFromPacket(packet);
         Vec3 packet_velocity = new Vec3(packet.getXa(), packet.getYa(), packet.getZa());
-        setDeltaMovement(packet_velocity.scale(1.0 / ClientboundAddEntityPacket.LIMIT));
+        setDeltaMovement(packet_velocity.scale(1.0 / LIMIT));
     }
 
     @Override
@@ -295,4 +296,9 @@ public class BulletEntity extends AbstractHurtingProjectile {
             setDeltaMovement(getDeltaMovement().scale(entityData.get(INITIAL_SPEED)));
         }
     }
+
+    // ClientboundAddEntityPacket.LIMIT
+    // I would make an AW but this is meant to be version independent
+    // For a simple mod update this works
+    private static final double LIMIT = 3.9D;
 }
