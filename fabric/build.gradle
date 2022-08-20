@@ -1,18 +1,18 @@
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.11-SNAPSHOT'
 }
 
-file("../gradle.properties").withInputStream {
-    def props = new Properties()
-    props.load(it)
-    props.each { prop -> project.ext.set(prop.key, prop.value) }
-}
+//file("../gradle.properties").withInputStream {
+//    def props = new Properties()
+//    props.load(it)
+//    props.each { prop -> project.ext.set(prop.key, prop.value) }
+//}
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-version = mod_version
-group = maven_group
+version = project.mod_version
+group = project.maven_group
 archivesBaseName = "${mod_name}-${minecraft_version}-fabric"
 
 eclipse {
@@ -22,22 +22,9 @@ eclipse {
 sourceSets.main.java { srcDir '../src/main/java' }
 sourceSets.main.resources { srcDir '../src/main/resources' }
 
-loom {
-    runs {
-        client {
-            runDir = '../run'
-            programArgs.add('--username')
-            programArgs.add('Dev')
-        }
-        server {
-            runDir = '../run'
-        }
-    }
-}
-
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings minecraft.officialMojangMappings()
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 }
@@ -51,5 +38,6 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
 	it.options.release = 17
 }
